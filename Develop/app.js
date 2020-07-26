@@ -14,6 +14,7 @@ const render = require("./lib/htmlRenderer");
 // and to create objects for each team member (using the correct classes as blueprints!)
 
 async function start(){
+    let teamObj = [];
     await inquirer.prompt(
         {
             type: 'number',
@@ -80,6 +81,7 @@ async function start(){
             ])
             .then((data) => {
                     const manager = new Manager(name, id, email, data.oNum);
+                    teamObj.push(manager);
                     console.log(manager);
             });
             break;
@@ -94,6 +96,7 @@ async function start(){
             ])
             .then((data) => {
                 const intern = new Intern(name, id, email, data.school);
+                teamObj.push(intern);
                 console.log(intern);
             });
             break;
@@ -108,17 +111,18 @@ async function start(){
             ])
             .then((data) => {
                 const engineer = new Engineer(name, id, email, data.github);
+                teamObj.push(engineer);
                 console.log(engineer);
             });
             break;
         }
     } 
-}
-start();
-
+    console.log(teamObj)
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
 // generate and return a block of HTML including templated divs for each employee!
+let htmlTeamList = render(teamObj);
+console.log(htmlTeamList);
 
 // After you have your html, you're now ready to create an HTML file using the HTML
 // returned from the `render` function. Now write it to a file named `team.html` in the
@@ -135,3 +139,7 @@ start();
 // for further information. Be sure to test out each class and verify it generates an
 // object with the correct structure and methods. This structure will be crucial in order
 // for the provided `render` function to work! ```
+}
+start();
+
+
