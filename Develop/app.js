@@ -10,9 +10,111 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
-
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
+
+async function start(){
+    await inquirer.prompt(
+        {
+            type: 'number',
+            name: 'teamSize',
+            message: 'How many people are on your team?',
+            validate:  (value) => {
+                var valid = !isNaN(parseFloat(value));
+                return valid || 'Please enter a number';
+            },
+            filter: Number,
+        }
+    )
+    .then((data) => {
+        teamSize = data.teamSize;
+        console.log(teamSize);
+    });
+
+    for(i = 0; i < teamSize; i++){
+        let name;
+        let id;
+        let role;
+        let email;
+    
+        await inquirer.prompt([ 
+            {
+                type: 'input',
+                name: 'name',
+                message: `Employee ${i+1}'s name?`,
+            },
+            {
+                type: "input",
+                name: "id",
+                message: `Employee ${i+1}'s ID number?`
+            },
+            {
+                type: "input",
+                name: "email",
+                message: `Employee ${i+1}'s Email address?`
+            },
+            {
+                type: "list",
+                name: "role",
+                message: `Employee ${i+1}'s Role?`,
+                choices: ['Manager', 'Engineer', 'Intern'],
+            }
+        ])
+        .then((data) => {
+    
+            name = data.name;
+            id = data.id;
+            role = data.role;
+            email = data.email;
+        });
+    
+        // Switch based on employee's role
+        switch (role){
+            case "Manager":
+            await inquirer.prompt([
+            {
+                type: "input",
+                name: "oNum",
+                message: "What's the office number?"
+            }
+            ])
+            .then((data) => {
+                    const manager = new Manager(name, id, email, data.oNum);
+                    console.log(manager);
+            });
+            break;
+
+            case "Intern":
+            await inquirer.prompt([
+            {
+                type: "input",
+                name: "school",
+                message: "Intern's School?"
+            }
+            ])
+            .then((data) => {
+                const intern = new Intern(name, id, email, data.school);
+                console.log(intern);
+            });
+            break;
+    
+            case "Engineer":
+            await inquirer.prompt([
+            {
+                type: "input",
+                name: "github",
+                message: "Engineer's GitHub?"
+            }
+            ])
+            .then((data) => {
+                const engineer = new Engineer(name, id, email, data.github);
+                console.log(engineer);
+            });
+            break;
+        }
+    } 
+}
+start();
 
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
